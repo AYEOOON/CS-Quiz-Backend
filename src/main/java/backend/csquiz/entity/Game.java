@@ -35,7 +35,7 @@ public class Game {
     public Game(String nickname, List<Long> questionIds) {
         this.gameId = UUID.randomUUID().toString();
         this.nickname = nickname;
-        this.currentQuestionIndex = 1;
+        this.currentQuestionIndex = 0;
         this.score = 0;
         this.questionIds = questionIds;
     }
