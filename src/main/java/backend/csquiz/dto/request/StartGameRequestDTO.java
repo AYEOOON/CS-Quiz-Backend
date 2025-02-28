@@ -9,6 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StartGameRequestDTO {
     private String nickname;
-    private int questionCount;
     private String difficulty;
 }
