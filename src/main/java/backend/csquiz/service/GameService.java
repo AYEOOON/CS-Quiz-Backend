@@ -33,7 +33,7 @@ public class GameService {
     }
 
     // 게임 시작
-    public String startGame(String nickname, int questionCount, String difficulty) {
+    public String startGame(String nickname, String difficulty) {
         // 닉네임 중복 확인
         if(userService.findByNickname(nickname).isPresent()){
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
@@ -45,7 +45,7 @@ public class GameService {
 
         // 문제를 무작위로 섞은 후, 필요한 문제만 선택
         Collections.shuffle(questionIds);
-        questionIds = questionIds.subList(0, Math.min(questionCount, questionIds.size()));
+        questionIds = questionIds.subList(0, Math.min(10, questionIds.size()));
 
         // 새로운 게임 생성
         Game game = new Game(nickname, questionIds);

@@ -23,11 +23,7 @@ public class GameController {
     // 게임 시작
     @PostMapping("/start")
     public GameStartResponseDTO startGame(@RequestBody StartGameRequestDTO request) {
-        String gameId = gameService.startGame(
-                request.getNickname(),
-                request.getQuestionCount(),
-                request.getDifficulty()
-        );
+        String gameId = gameService.startGame(request.getNickname(), request.getDifficulty());
         return new GameStartResponseDTO(gameId);
     }
 
