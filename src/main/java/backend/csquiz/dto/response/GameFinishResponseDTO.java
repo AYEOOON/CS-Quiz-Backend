@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GameFinishResponseDTO {
-    private String message;
+    private String nickname;
     private int finalScore;
 }

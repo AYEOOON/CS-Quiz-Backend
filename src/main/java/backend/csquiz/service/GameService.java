@@ -1,5 +1,6 @@
 package backend.csquiz.service;
 
+import backend.csquiz.dto.response.GameFinishResponseDTO;
 import backend.csquiz.dto.response.QuestionResponseDTO;
 import backend.csquiz.entity.Game;
 import backend.csquiz.entity.Question;
@@ -91,10 +92,10 @@ public class GameService {
 
     // 게임 종료 및 최종 점수 반환
     @Transactional
-    public int finishGame(String gameId) {
+    public GameFinishResponseDTO finishGame(String gameId) {
         Game game = findGameById(gameId);
         userService.saveScore(game.getNickname(), game.getScore());
-        return game.getScore();
+        return new GameFinishResponseDTO(game.getNickname(), game.getScore());
     }
 
     // 게임에 출제된 문제 조회

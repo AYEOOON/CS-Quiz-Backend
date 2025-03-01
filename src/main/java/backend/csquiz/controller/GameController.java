@@ -6,6 +6,7 @@ import backend.csquiz.dto.response.CheckAnswerResponseDTO;
 import backend.csquiz.dto.response.GameFinishResponseDTO;
 import backend.csquiz.dto.response.GameStartResponseDTO;
 import backend.csquiz.dto.response.QuestionResponseDTO;
+import backend.csquiz.entity.Game;
 import backend.csquiz.entity.Question;
 import backend.csquiz.service.GameService;
 import java.util.List;
@@ -43,8 +44,7 @@ public class GameController {
     // 게임 종료
     @PostMapping("/{gameId}/end")
     public GameFinishResponseDTO finishGame(@PathVariable String gameId) {
-        int finalScore = gameService.finishGame(gameId); // 최종 점수 가져오기
-        return new GameFinishResponseDTO("게임이 끝났습니다.", finalScore);
+        return gameService.finishGame(gameId);
     }
 
     // 다음 문제로 넘어가기
