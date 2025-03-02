@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
     }
 
     // 500 Internal Server Error 처리
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleServerError(Exception ex){
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "서버 내부 오류가 발생하였습니다.");
     }
