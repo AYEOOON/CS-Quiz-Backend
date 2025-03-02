@@ -113,7 +113,8 @@ public class GameService {
                         question.getQuestion(),
                         question.getAnswer(),
                         question.getDifficulty(),
-                        question.getOptions()
+                        question.getOptions(),
+                        false
                 )).collect(Collectors.toList());
     }
 
@@ -126,7 +127,7 @@ public class GameService {
 
         // 모든 문제를 다 풀었으면 null 반환
         if (currentIndex >= game.getQuestionIds().size()) {
-            return null;
+            return new QuestionResponseDTO(null, "모든 문제를 완료하였습니다.", null, null, null, true);
         }
 
         // 문제 ID를 이용해 DB에서 직접 조회
@@ -146,7 +147,8 @@ public class GameService {
                 nextQuestion.getQuestion(),
                 nextQuestion.getAnswer(),
                 nextQuestion.getDifficulty(),
-                nextQuestion.getOptions()
+                nextQuestion.getOptions(),
+                false // 마지막 문제가 아님
         );
     }
 }
