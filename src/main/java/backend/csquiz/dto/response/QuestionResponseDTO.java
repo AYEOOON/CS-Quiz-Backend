@@ -14,4 +14,5 @@ public class QuestionResponseDTO {
     private String answer;
     private String difficulty;
     private List<String> optionText;
+    private boolean isLastQuestion;
 }
