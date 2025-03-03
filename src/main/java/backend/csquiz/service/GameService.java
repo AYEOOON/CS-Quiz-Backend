@@ -1,6 +1,7 @@
 package backend.csquiz.service;
 
 import backend.csquiz.dto.response.GameFinishResponseDTO;
+import backend.csquiz.dto.response.GameStartResponseDTO;
 import backend.csquiz.dto.response.QuestionResponseDTO;
 import backend.csquiz.entity.Game;
 import backend.csquiz.entity.Question;
@@ -34,7 +35,7 @@ public class GameService {
     }
 
     // 게임 시작
-    public String startGame(String nickname, String difficulty) {
+    public GameStartResponseDTO startGame(String nickname, String difficulty) {
         // 닉네임 중복 확인
         if(userService.findByNickname(nickname).isPresent()){
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
@@ -52,7 +53,7 @@ public class GameService {
         Game game = new Game(nickname, questionIds);
         gameRepository.save(game);
 
-        return game.getGameId();
+        return new GameStartResponseDTO(game.getGameId(), getQuestionsByGame(game.getGameId()));
     }
 
     // 난이도에 따른 문제 가져오기
@@ -71,6 +72,7 @@ public class GameService {
     // 정답 확인
     @Transactional
     public boolean checkAnswer(String gameId, Long questionId, String userAnswer){
+        System.out.println("사용자 답: "+userAnswer);
         Game game = findGameById(gameId);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 질문입니다."));
