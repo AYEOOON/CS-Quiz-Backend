@@ -21,5 +21,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = false)
     private int score;
 }

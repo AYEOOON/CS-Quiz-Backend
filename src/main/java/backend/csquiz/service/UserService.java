@@ -5,6 +5,7 @@ import backend.csquiz.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -21,12 +22,20 @@ public class UserService {
     }
 
     // 사용자 점수 저장
-    public void saveScore(String nickname, int score){
+// 사용자 점수 저장 (누적 방식)
+    @Transactional
+    public void saveScore(String nickname, int additionalScore) {
         User user = userRepository.findByNickname(nickname)
-                .orElse(new User()); // 새로운 사용자일 경우 생성
-        user.setNickname(nickname);
-        user.setScore(score);
-        userRepository.save(user); // 점수 저장
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setNickname(nickname);
+                    newUser.setScore(0); // 초기 점수 0 설정
+                    return userRepository.save(newUser);
+                });
+
+        // 점수 누적
+        user.setScore(user.getScore() + additionalScore);
+        userRepository.save(user);
     }
 
     public List<User> getRanking() {
