@@ -37,9 +37,12 @@ public class GameService {
     // 게임 시작
     public GameStartResponseDTO startGame(String nickname, String difficulty) {
         // 닉네임 중복 확인
-        if(userService.findByNickname(nickname).isPresent()){
+        if(userService.findByNickname(nickname).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
+
+        // 새로운 유저 등록(초기 점수 0)
+        userService.saveScore(nickname, 0);
 
         List<Long> questionIds = getQuestionsByDifficulty(difficulty).stream()
                 .map(Question::getId)
