@@ -12,8 +12,8 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")  // 적용할 API 경로 지정
-                        .allowedOrigins("http://localhost:5173")  // 허용할 프론트엔드 주소
+                registry.addMapping("/**")  // 적용할 API 경로 지정
+                        .allowedOriginPatterns("*") // 허용할 프론트엔드 주소
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
