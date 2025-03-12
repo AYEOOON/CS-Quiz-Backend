@@ -23,9 +23,9 @@ public class GameService {
 
     // 난이도에 따른 점수 매핑
     private static final Map<String, Integer> SCORE_MAP = Map.of(
-            "easy", 10,
-            "normal", 20,
-            "hard", 30
+            "Easy", 10,
+            "Normal", 20,
+            "Hard", 30
     );
 
     public GameService(GameRepository gameRepository, QuestionRepository questionRepository, UserService userService) {
