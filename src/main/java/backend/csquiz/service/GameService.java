@@ -124,37 +124,8 @@ public class GameService {
                 )).collect(Collectors.toList());
     }
 
-    public QuestionResponseDTO getNextQuestion(String gameId) {
-        // 게임 ID로 게임 정보를 조회
-        Game game = findGameById(gameId);
-
-        // 게임에 저장된 문제 리스트에서 현재 진행 중인 문제 찾기
-        int currentIndex = game.getCurrentQuestionIndex();
-
-        // 모든 문제를 다 풀었으면 null 반환
-        if (currentIndex >= game.getQuestionIds().size()) {
-            return new QuestionResponseDTO(null, "모든 문제를 완료하였습니다.", null, null, null, true);
-        }
-
-        // 문제 ID를 이용해 DB에서 직접 조회
-        Long questionId = game.getQuestionIds().get(currentIndex);
-
-        // 다음 문제 가져오기
-        Question nextQuestion = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("문제를 찾을 수 없습니다."));
-
-        // 현재 문제 인덱스 업데이트
-        game.setCurrentQuestionIndex(currentIndex+1);
-        gameRepository.save(game);
-
-        // DTO로 변환하여 반환
-        return new QuestionResponseDTO(
-                nextQuestion.getId(),
-                nextQuestion.getQuestion(),
-                nextQuestion.getAnswer(),
-                nextQuestion.getDifficulty(),
-                nextQuestion.getOptions(),
-                false // 마지막 문제가 아님
-        );
+    @Transactional
+    public void deleteGame(String gameId){
+        gameRepository.findByGameId(gameId).ifPresent(gameRepository::delete);
     }
 }
