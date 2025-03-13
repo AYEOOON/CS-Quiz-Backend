@@ -41,9 +41,6 @@ public class GameService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
-        // 새로운 유저 등록(초기 점수 0)
-        userService.saveScore(nickname, 0);
-
         List<Long> questionIds = getQuestionsByDifficulty(difficulty).stream()
                 .map(Question::getId)
                 .collect(Collectors.toList());
@@ -75,7 +72,6 @@ public class GameService {
     // 정답 확인
     @Transactional
     public boolean checkAnswer(String gameId, Long questionId, String userAnswer){
-        System.out.println("사용자 답: "+userAnswer);
         Game game = findGameById(gameId);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 질문입니다."));
@@ -98,8 +94,13 @@ public class GameService {
     // 게임 종료 및 최종 점수 반환
     @Transactional
     public GameFinishResponseDTO finishGame(String gameId) {
-        Game game = findGameById(gameId);
-        userService.saveScore(game.getNickname(), game.getScore());
+        Game game = gameRepository.findByGameId(gameId)
+                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게임입니다."));
+
+        if (!game.isFinished()) {
+            game.finish(); // 게임 종료 상태 변경
+            userService.saveScore(game.getNickname(), game.getScore());
+        }
         return new GameFinishResponseDTO(game.getNickname(), game.getScore());
     }
 
