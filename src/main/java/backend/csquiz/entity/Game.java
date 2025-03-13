@@ -24,9 +24,9 @@ public class Game {
     @Column(nullable = false)
     private String nickname;
 
-    private int currentQuestionIndex;
-
     private int score = 0; // 초기 점수 설정
+
+    private boolean isFinished = false; // 게임 종료 여부
 
     @ElementCollection // 별도 테이블 없이 리스트 형태로 저장
     private List<Long> questionIds;  // 출제된 질문들의 ID 목록
@@ -35,8 +35,12 @@ public class Game {
     public Game(String nickname, List<Long> questionIds) {
         this.gameId = UUID.randomUUID().toString();
         this.nickname = nickname;
-        this.currentQuestionIndex = 0;
         this.score = 0;
         this.questionIds = questionIds;
+        this.isFinished = false;
+    }
+
+    public void finish() {
+        this.isFinished = true;
     }
 }
