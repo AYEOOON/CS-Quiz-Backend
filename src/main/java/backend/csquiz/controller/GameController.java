@@ -6,10 +6,9 @@ import backend.csquiz.dto.response.CheckAnswerResponseDTO;
 import backend.csquiz.dto.response.GameFinishResponseDTO;
 import backend.csquiz.dto.response.GameStartResponseDTO;
 import backend.csquiz.dto.response.QuestionResponseDTO;
-import backend.csquiz.entity.Game;
-import backend.csquiz.entity.Question;
 import backend.csquiz.service.GameService;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
