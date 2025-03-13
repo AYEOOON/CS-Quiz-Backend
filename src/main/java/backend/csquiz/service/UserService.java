@@ -22,9 +22,8 @@ public class UserService {
     }
 
     // 사용자 점수 저장
-// 사용자 점수 저장 (누적 방식)
     @Transactional
-    public void saveScore(String nickname, int additionalScore) {
+    public void saveScore(String nickname, int score) {
         User user = userRepository.findByNickname(nickname)
                 .orElseGet(() -> {
                     User newUser = new User();
@@ -34,7 +33,7 @@ public class UserService {
                 });
 
         // 점수 누적
-        user.setScore(user.getScore() + additionalScore);
+        user.setScore(user.getScore() + score);
         userRepository.save(user);
     }
 

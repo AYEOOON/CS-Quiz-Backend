@@ -45,9 +45,10 @@ public class GameController {
         return gameService.finishGame(gameId);
     }
 
-    // 다음 문제로 넘어가기
-    @GetMapping("/{gameId}/next")
-    public QuestionResponseDTO getNextQuestion(@PathVariable String gameId) {
-        return gameService.getNextQuestion(gameId);
+    // 게임 도중 나갈 시 게임 데이터 삭제
+    @PostMapping("/{gameId}/leave")
+    public ResponseEntity<String> leaveGame(@PathVariable String gameId){
+        gameService.deleteGame(gameId);
+        return ResponseEntity.ok("게임이 정상적으로 삭제되었습니다.");
     }
 }
