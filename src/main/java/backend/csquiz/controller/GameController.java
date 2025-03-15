@@ -22,33 +22,29 @@ public class GameController {
 
     // 게임 시작
     @PostMapping("/start")
-    public GameStartResponseDTO startGame(@RequestBody StartGameRequestDTO request) {
-        return gameService.startGame(request.getNickname(), request.getDifficulty());
+    public ResponseEntity<GameStartResponseDTO> startGame(@RequestBody StartGameRequestDTO request) {
+        GameStartResponseDTO response = gameService.startGame(request.getNickname(), request.getDifficulty());
+        return ResponseEntity.ok(response);
     }
 
     // 게임의 문제 조회
     @GetMapping("/{gameId}/questions")
-    public List<QuestionResponseDTO> getQuestionByGame(@PathVariable String gameId) {
-        return gameService.getQuestionsByGame(gameId);
+    public ResponseEntity<List<QuestionResponseDTO>> getQuestionByGame(@PathVariable String gameId) {
+        List<QuestionResponseDTO> response = gameService.getQuestionsByGame(gameId);
+        return ResponseEntity.ok(response);
     }
 
     // 정답 확인
     @PostMapping("/{gameId}/answer")
-    public CheckAnswerResponseDTO checkAnswer(@PathVariable String gameId, @RequestBody CheckAnswerRequestDTO request) {
+    public ResponseEntity<CheckAnswerResponseDTO> checkAnswer(@PathVariable String gameId, @RequestBody CheckAnswerRequestDTO request) {
         boolean isCorrect = gameService.checkAnswer(gameId, request.getQuestionId(), request.getAnswer());
-        return new CheckAnswerResponseDTO(isCorrect);
+        return ResponseEntity.ok(new CheckAnswerResponseDTO(isCorrect));
     }
 
     // 게임 종료
     @PostMapping("/{gameId}/end")
-    public GameFinishResponseDTO finishGame(@PathVariable String gameId) {
-        return gameService.finishGame(gameId);
-    }
-
-    // 게임 도중 나갈 시 게임 데이터 삭제
-    @PostMapping("/{gameId}/leave")
-    public ResponseEntity<String> leaveGame(@PathVariable String gameId){
-        gameService.deleteGame(gameId);
-        return ResponseEntity.ok("게임이 정상적으로 삭제되었습니다.");
+    public ResponseEntity<GameFinishResponseDTO> finishGame(@PathVariable String gameId) {
+        GameFinishResponseDTO response = gameService.finishGame(gameId);
+        return ResponseEntity.ok(response);
     }
 }
