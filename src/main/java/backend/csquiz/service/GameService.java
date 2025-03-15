@@ -37,7 +37,7 @@ public class GameService {
     // 게임 시작
     public GameStartResponseDTO startGame(String nickname, String difficulty) {
         // 닉네임 중복 확인
-        if(userService.findByNickname(nickname).isPresent()) {
+        if(userService.isUserInGame(nickname) || userService.findByNickname(nickname).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
@@ -45,13 +45,15 @@ public class GameService {
                 .map(Question::getId)
                 .collect(Collectors.toList());
 
-        // 문제를 무작위로 섞은 후, 필요한 문제만 선택
+        // 문제를 무작위로 섞음
         Collections.shuffle(questionIds);
-        questionIds = questionIds.subList(0, Math.min(10, questionIds.size()));
 
         // 새로운 게임 생성
         Game game = new Game(nickname, questionIds);
         gameRepository.save(game);
+
+        // 게임 시작 시 사용자 상태 업데이트 (게임에 참여 중임을 Redis에 기록)
+        userService.markUserAsInGame(nickname);
 
         return new GameStartResponseDTO(game.getGameId(), getQuestionsByGame(game.getGameId()));
     }
@@ -60,9 +62,9 @@ public class GameService {
     private List<Question> getQuestionsByDifficulty(String difficulty) {
         if ("random".equalsIgnoreCase(difficulty)) {
             List<Question> allQuestions = new ArrayList<>();
-            allQuestions.addAll(questionRepository.findAllByDifficulty("easy"));
-            allQuestions.addAll(questionRepository.findAllByDifficulty("normal"));
-            allQuestions.addAll(questionRepository.findAllByDifficulty("hard"));
+            allQuestions.addAll(questionRepository.findAllByDifficulty("Easy"));
+            allQuestions.addAll(questionRepository.findAllByDifficulty("Normal"));
+            allQuestions.addAll(questionRepository.findAllByDifficulty("Hard"));
             return allQuestions;
         } else {
             return questionRepository.findAllByDifficulty(difficulty);
@@ -101,6 +103,10 @@ public class GameService {
             game.finish(); // 게임 종료 상태 변경
             userService.saveScore(game.getNickname(), game.getScore());
         }
+
+        // 게임 종료 후 사용자 상태 처리
+        userService.removeUserFromGame(game.getNickname());
+
         return new GameFinishResponseDTO(game.getNickname(), game.getScore());
     }
 
@@ -122,10 +128,5 @@ public class GameService {
                         question.getOptions(),
                         false
                 )).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void deleteGame(String gameId){
-        gameRepository.findByGameId(gameId).ifPresent(gameRepository::delete);
     }
 }
