@@ -65,7 +65,7 @@ public class GameService {
             allQuestions.addAll(questionRepository.findAllByDifficulty("Easy"));
             allQuestions.addAll(questionRepository.findAllByDifficulty("Normal"));
             allQuestions.addAll(questionRepository.findAllByDifficulty("Hard"));
-            return allQuestions;
+            return allQuestions.subList(0, 20);
         } else {
             return questionRepository.findAllByDifficulty(difficulty);
         }
