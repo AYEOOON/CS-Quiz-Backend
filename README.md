@@ -42,4 +42,25 @@
 - 사용자를 나타내는 엔티티로, nickname과 score를 저장합니다.
 - 각 사용자는 여러 게임을 진행할 수 있습니다.
 
-![image](https://github.com/user-attachments/assets/24537b29-e706-467e-a857-f1127d49a60c)
+![image](https://github.com/user-attachments/assets/efb617ba-6b58-45b5-ae00-42f86654a5da)
+
+
+## 아키텍처 구조
+이 프로젝트는 AWS EC2 인스턴스에서 실행되며, 아래와 같은 주요 구성 요소로 이루어져 있습니다.  
+
+**주요 기술 스택**  
+- 애플리케이션 서버: Spring Boot (Java)
+- 데이터베이스: MySQL (EC2 내부에서 실행)
+- 캐시 서버: Redis (EC2 내부에서 실행)
+- Reverse Proxy & SSL: Caddy (Let's Encrypt SSL 인증서 자동화)
+- 배포 환경: AWS EC2 (Ubuntu)
+
+**서버 아키텍처 흐름**  
+- 클라이언트 → Caddy (Reverse Proxy & SSL)
+- Caddy → Spring Boot 애플리케이션 서버
+- Spring Boot → Redis (캐싱)
+- Spring Boot → MySQL (데이터 저장)
+- MySQL & Redis: EC2 내부에서 실행
+
+![image](https://github.com/user-attachments/assets/3024ed55-ee57-44e4-9229-2318adfc6fea)
+
