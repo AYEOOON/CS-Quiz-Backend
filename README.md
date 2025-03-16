@@ -1,63 +1,66 @@
-# CS 지식 퀴즈
-## cs-quiz-backend
+# cs-quiz-backend
+## 개발 환경
+- **백엔드**: Java 21, Spring Boot 3.4.2
+- **데이터베이스**: MySQL, Redis
+- **빌드 도구**: Gradle
+- **개발 도구**: IntelliJ IDEA Community Edition 2023.3.2
+- **버전 관리**: Git, GitHub
+  
+## 데이터베이스 관계도
 
-### 📌 주요 기능
-#### 게임 관리
-- 사용자가 게임을 시작하고 종료할 수 있음
+### 테이블 구조
+**Game**  
+- id: 게임 고유 ID  
+- nickname: 사용자의 닉네임  
+- difficulty: 게임 난이도  
+- score: 최종 점수  
 
-- 게임 중 문제를 출제하고 정답을 확인할 수 있음
+**Question**  
+- id: 문제 고유 ID
+- question: 문제 내용
+- options: 선택지
+- answer: 정답
+- difficulty: 난이도
+  
+**User**  
+- id: 사용자 고유 ID
+- nickname: 사용자 닉네임
+- score: 점수
 
-- 게임 종료 시 최종 점수를 계산하여 저장
+![image](https://github.com/user-attachments/assets/90889767-bc7a-417b-a8e4-2e985c961834)
 
-#### 문제 관리
-- 난이도(쉬움, 보통, 어려움)에 따라 문제를 조회할 수 있음
+## ERD
+**1. Game**  
+- 게임을 나타내는 엔티티로, 고유한 gameId와 nickname, score를 관리합니다.
+- isFinished 필드로 게임의 종료 여부를 체크하며, 출제된 문제들의 ID 목록을 questionIds로 저장합니다.
 
-- 게임 시작 시 선택한 난이도에 맞는 문제를 랜덤으로 출제
+**2. Question**  
+- 퀴즈 문제를 나타내는 엔티티입니다.
+- question 필드는 문제의 내용을, options는 선택지들을 저장하고, answer는 정답을, difficulty는 문제의 난이도를 나타냅니다.
 
-#### 랭킹 관리
-- 게임 종료 후 사용자 점수를 저장
+**3. User**  
+- 사용자를 나타내는 엔티티로, nickname과 score를 저장합니다.
+- 각 사용자는 여러 게임을 진행할 수 있습니다.
 
-- 전체 사용자의 점수를 기준으로 랭킹을 정렬하여 제공
+![image](https://github.com/user-attachments/assets/efb617ba-6b58-45b5-ae00-42f86654a5da)
 
-## 📌 ERD (Entity Relationship Diagram)
 
-![img.png](img.png)
+## 아키텍처 구조
+이 프로젝트는 AWS EC2 인스턴스에서 실행되며, 아래와 같은 주요 구성 요소로 이루어져 있습니다.  
 
-## 📌 API 정리
-### 게임 API
-| HTTP Method | Endpoint                   | Request Body               | Response Body                      | Description          |
-|------------|---------------------------|----------------------------|-------------------------------------|----------------------|
-| POST       | `/api/game/start`         | `{ "nickname": "string", "difficulty": "string" }` | `{ "gameId": "string" }`           | 게임 시작 (새 게임 생성) |
-| GET        | `/api/game/{gameId}/questions` | -                          | `[ { "questionId": long, "question": "string", "options": ["string"] } ]` | 게임의 문제 목록 조회 |
-| POST       | `/api/game/{gameId}/answer` | `{ "questionId": long, "answer": "string" }` | `{ "correct": boolean }` | 정답 확인 |
-| POST       | `/api/game/{gameId}/end`   | -                          | `{ "message": "string", "finalScore": int }` | 게임 종료 및 최종 점수 반환 |
-| GET        | `/api/game/{gameId}/next`  | -                          | `{ "questionId": long, "question": "string", "options": ["string"] }` | 다음 문제 조회 |
+**주요 기술 스택**  
+- 애플리케이션 서버: Spring Boot (Java)
+- 데이터베이스: MySQL (EC2 내부에서 실행)
+- 캐시 서버: Redis (EC2 내부에서 실행)
+- Reverse Proxy & SSL: Caddy (Let's Encrypt SSL 인증서 자동화)
+- 배포 환경: AWS EC2 (Ubuntu)
 
-### 문제 API
-| HTTP Method | Endpoint            | Request Body | Response Body | Description     |
-|------------|--------------------|--------------|--------------|----------------|
-| GET        | `/api/questions`   | -            | `[ { "questionId": long, "question": "string", "options": ["string"], "answer": "string", "difficulty": "string" } ]` | 전체 문제 목록 조회 |
+**서버 아키텍처 흐름**  
+- 클라이언트 → Caddy (Reverse Proxy & SSL)
+- Caddy → Spring Boot 애플리케이션 서버
+- Spring Boot → Redis (캐싱)
+- Spring Boot → MySQL (데이터 저장)
+- MySQL & Redis: EC2 내부에서 실행
 
-### 사용자 API
-| HTTP Method | Endpoint         | Request Body | Response Body | Description      |
-|------------|-----------------|--------------|--------------|----------------|
-| GET        | `/api/users/ranking` | -            | `[ { "id": long, "nickname": "string", "score": int } ]` | 점수 순으로 유저 랭킹 조회 |
+![image](https://github.com/user-attachments/assets/3024ed55-ee57-44e4-9229-2318adfc6fea)
 
-### 설명
-1. 게임 API
-
-- startGame: 게임 시작 시 닉네임과 난이도를 입력하면 gameId를 반환.
-
-- getQuestionByGame: 특정 gameId의 문제 목록을 조회.
-
-- checkAnswer: 사용자가 선택한 답이 맞았는지 확인.
-
-- finishGame: 게임 종료 후 최종 점수 반환.
-
-- getNextQuestion: 현재 게임의 다음 문제 조회.
-
-2. 문제 API
-- getAllQuestions: 모든 문제를 조회.
-
-3. 사용자 API
-- getRanking: 점수 순으로 정렬된 사용자 랭킹을 조회.
