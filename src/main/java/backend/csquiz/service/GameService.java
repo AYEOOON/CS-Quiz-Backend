@@ -125,8 +125,7 @@ public class GameService {
                         question.getQuestion(),
                         question.getAnswer(),
                         question.getDifficulty(),
-                        question.getOptions(),
-                        false
+                        question.getOptions()
                 )).collect(Collectors.toList());
     }
 }

@@ -34,6 +34,6 @@ public class QuestionService {
 
     // 엔티티를 DTO로 변환
     private QuestionResponseDTO convertToDTO(Question question) {
-        return new QuestionResponseDTO(question.getId(), question.getQuestion(), question.getAnswer(), question.getDifficulty(), question.getOptions(),false);
+        return new QuestionResponseDTO(question.getId(), question.getQuestion(), question.getAnswer(), question.getDifficulty(), question.getOptions());
     }
 }
