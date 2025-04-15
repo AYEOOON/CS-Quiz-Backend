@@ -78,5 +78,5 @@
 - [Redis로 중복 닉네임 방지하기](https://www.notion.so/Redis-1b5574e3025980e5b739ff87b013fb85)
 - [AWS EC2에서 MySQL 서버 구축하고 Spring Boot 서버 배포하고 Caddy로 HTTPS 설정하기](https://www.notion.so/AWS-EC2-MySQL-Spring-Boot-Caddy-Https-1ad574e3025980fda097ec8fdc729ded)
 - [goorm IDE로 MySQL 서버 구축하기](https://www.notion.so/goorm-IDE-MySQL-1ac574e30259803cae21d947f0bf96cd)
-- [findAllByOrderByScoreDesc()와 생성자](https://www.notion.so/findAllByOrderByScoreDesc-1b5574e3025980c9a930d663cf840d53)
+- [메서드는 맞는데 왜 오류가 날까?(findAllByOrderByScoreDesc() 오류)](https://www.notion.so/findAllByOrderByScoreDesc-1b5574e3025980c9a930d663cf840d53)
 - [작은 프로젝트에서 서비스만 테스트해도 될까?](https://hammerhead-horse-801.notion.site/1d6574e30259800fb8e1cccd7f2b7c1c?pvs=4)
